@@ -1,0 +1,110 @@
+{% extends "layouts/index.html" %}
+
+{% block body %}
+
+<div class="body" style="margin-top: 3cm;">
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link atext " href='{% url "orders" %}'><i class="fas fa-shopping-bag"></i> Orders</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link atext active" href='{% url "cart" %}'><i class="fas fa-shopping-cart"></i> Cart</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link atext" href='{% url "favorites" %}'><i class="fas fa-heart"></i> Favourite</a>
+    </li>
+   
+    
+    </ul>
+  <br>
+  <h3>User Cart</h3>
+  <hr style="color: rgba(0, 0, 0, 0.61);">
+  <br>
+  {% include "message.html" %}
+  <table class="table" style="border-collapse: separate; border-spacing: 0 10px;">
+    <tr style=" text-align: center;">
+      <th>Image</th>
+      <th>Product Name</th>
+      <th>Unit Price</th>
+      <th>Quantity</th>
+      <th>Amount</th>
+      <th>Remove</th>
+    </tr>
+    {% for c in cart %}
+    <tr style="text-align: center; margin-top: 2cm;" class="item-row">
+      <td><a href="{% url 'product' c.product.category c.product.name %}" class="ttext"><img src="{{c.product.image.url}}" alt="{{c.product.name}}" height="75px"></a></td>
+      <td><a href="{% url 'product' c.product.category c.product.name %}" class="ttext"><span class="ttext">{{c.product.name}}</span></a></td>
+      <td><a href="{% url 'product' c.product.category c.product.name %}" class="ttext">$<span class="unit-price">{{c.product.selling_price}}</span></a></td>
+      <td><a href="{% url 'product' c.product.category c.product.name %}" class="ttext qty">{{c.product_quantity}}</a></td>
+      <td><a href="{% url 'product' c.product.category c.product.name %}" class="ttext"><span class="total"></span></a></td>
+      <td><a href="{% url 'remove_cart' c.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to remove')"><i class="fa fa-trash"></i> Remove</a></td>
+    </tr>
+    
+    {% endfor %}
+    
+    <tr style="text-align: center;font-size: 20px;">
+      <th colspan="4">Total Amount</th>
+      <td id="total-amount" style="color: green;font-weight: bold;">$0.00</td>
+      <td></td> <!-- Empty column for alignment -->
+    </tr>
+  </table>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+  $(document).ready(function(){
+    $('.item-row').each(function() {
+      var sellingPrice = parseFloat($(this).find('.unit-price').text().replace('$', ''));
+      var quantity = parseInt($(this).find('.qty').text());
+      var total = sellingPrice * quantity;
+      $(this).find('.total').text('$' + total.toFixed(2));
+    });
+
+    // Calculate and display the total amount
+    var totalAmount = 0;
+    $('.total').each(function() {
+      totalAmount += parseFloat($(this).text().replace('$', ''));
+    });
+    $('#total-amount').text('$' + totalAmount.toFixed(2));
+  });
+</script>
+
+<style>
+  /* Apply styles directly to table rows */
+  .item-row {
+    height: 2cm;
+    font-size: 20px;
+    background-color: #ffffffc7;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 5px 10px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+ .item-row:hover{
+  height: 2cm;
+    background-color: #ffffffc7;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 10px 15px 20px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+ }
+ .ttext{
+  text-decoration: none;
+  color: black;
+ }
+ img{
+  background-color: #ffffffc7;
+    border-radius: 3px; /* Rounded corners */
+    box-shadow: 0px 5px 10px rgba(14, 14, 14, 0.288); /* Subtle shadow */
+ }
+
+ .atext {
+      color: black;
+    }
+    .atext:hover {
+      color: white;
+      background-color: black;
+    }
+</style>
+
+{% endblock body %}

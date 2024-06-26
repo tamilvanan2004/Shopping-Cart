@@ -1,0 +1,64 @@
+
+
+{% extends "layouts/index.html" %}
+
+{% block body %}
+  
+<div class="body" style="margin-top: 3cm;">
+    <h1>Search Results for "{{query}}"</h1>
+    {% if results %}
+    <table class="table container" style="border-collapse: separate; border-spacing: 0 10px;">
+        <tr style=" text-align: center;">
+          <th>Image</th>
+          <th>Name</th>
+          <th> Price</th>
+          
+        </tr>
+        <ul>
+            {% for f in results %}
+            <tr style="text-align: center;" class="item-row">
+                <td><a href="{% url 'product' f.category f.name %}"><img src="{{f.image.url}}" alt="{{f.product.name}}" height="75px"></a></td>
+                <td><a href="{% url 'product' f.category f.name %}" class="ttext">{{f.name}}</a></td>
+                <td><a href="{% url 'product' f.category f.name %}" class="ttext">$<span class="unit-price">{{f.selling_price}}</span></a></td>
+            </tr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+<style>
+    .atext {
+      color: black;
+    }
+    .atext:hover {
+      color: white;
+      background-color: black;
+    }
+     .item-row {
+    height: 2cm;
+    font-size: 20px;
+    background-color: #ffffffc7;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 5px 10px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+ .item-row:hover{
+  height: 2cm;
+    background-color: #ffffffc7;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 10px 15px 20px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+ }
+ .ttext{
+  text-decoration: none;
+  color: black;
+ }
+ img{
+  background-color: #ffffffc7;
+    border-radius: 3px; /* Rounded corners */
+    box-shadow: 0px 5px 10px rgba(14, 14, 14, 0.288); /* Subtle shadow */
+ }
+  </style>
+
+{% endblock body %}

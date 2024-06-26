@@ -1,0 +1,154 @@
+{% extends "layouts/index.html" %}
+<head>
+    
+</head>
+{% block body %}
+  <div class="body" style="margin-top: 3cm;">
+    {% include "message.html" %}
+    {% if user.is_authenticated %}
+    <h3>Welcome {{user.username}}</h3>
+    <hr style="color: rgba(0, 0, 0, 0.61);">
+     <br>
+    {% endif %}
+     <h3>Festival Offers</h3>
+     <hr style="color: rgba(0, 0, 0, 0.61);">
+     <br>
+     <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for slider in sliders %}
+            <div class="carousel-item {% if forloop.first %} active {% endif %}">
+            {% if slider.image %}
+             <img src="{{ slider.image.url }}" class="d-block w-100" alt="">
+              {% else %}
+            <p>No image found</p>
+             {% endif %}
+            </div>
+            {% endfor %}
+
+        </div>
+        <!-- Add carousel controls here -->
+    
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+     </div>
+     <br>
+    <h3>Trending Products</h3>
+    <hr style="color: rgba(0, 0, 0, 0.61);">
+     <br>
+    <div class="Pcontainer">
+        {% for p in trendP %}
+        <a href="{% url 'product' p.category p.name%}">
+            <div class="Pcard" style="background-image: url('{{p.image.url}}');">
+                <p class="Ptitle">
+                  <b>{{p.name}}</b>
+                </p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script>
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    <style>
+        .carousel-item img {
+        height: 10cm; /* Adjust the height as needed */
+        object-fit: cover; /* Maintain aspect ratio and cover the entire space */
+    }
+  .slider {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    gap: 0.5cm;
+    overflow-y: scroll; /* Enable vertical scrolling */
+}
+
+/* Hide scrollbar */
+.slider::-webkit-scrollbar {
+    display: none;
+}
+
+
+        .Pcontainer {
+            overflow-x: auto; /* Enable horizontal scrolling */
+            display: flex;
+            scroll-snap-type: x mandatory;
+            width: 90%;
+            margin: 0 auto;
+            padding: 0 15px;
+            gap: 0.5cm;
+        }
+    
+        .Pcontainer::-webkit-scrollbar {
+            height: 8px; /* Set scrollbar height */
+        }
+    
+        .Pcontainer::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Set track color */
+        }
+    
+        .Pcontainer::-webkit-scrollbar-thumb {
+            background: #888; /* Set thumb color */
+            border-radius: 4px; /* Add border-radius */
+        }
+    
+        .Pcard {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(7px);
+            -webkit-backdrop-filter: blur(7px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem;
+            width: 100%;
+            height: 4cm;
+            
+        }
+    
+        .Pcontainer:hover > :not(:hover) {
+            transition: 1s;
+            opacity: 0.2;
+        }
+    
+        .Ptitle {
+            width: 100%;
+            display: inline-block;
+            word-break: break-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            margin: 1rem auto;
+            font-size: 15px;
+        }
+
+        a{
+            color: black;
+            text-decoration: none;
+        
+        }
+        .slider {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .slider img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+
+
+    
+</div>
+
+{% endblock body %}

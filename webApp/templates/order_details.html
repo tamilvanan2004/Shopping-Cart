@@ -1,0 +1,177 @@
+{% extends "layouts/index.html" %}
+
+{% block body %}
+  <div class="body" style="margin-top: 3cm;">
+    <h3>Order Details</h3>
+    <hr style="color: rgba(0, 0, 0, 0.61);">
+    
+    <div class="container ">
+      <div class="custom-card">    
+        <div class="custom-card-body">
+          <div class="row">
+            <div class="column">
+              <h4>{{ data.product.name }}</h4>
+              <hr style="color: rgba(0, 0, 0, 0.61);">
+              <p>Name : <span style='font-weight: bold;'>{{data.name|upper}}</span></p>
+              <p>Order Id: {{data.id}}</p>
+              <p>Mobile Number: {{data.number}}</p>
+              <p>Product Price: <span style="color: green; font-weight: bold;">${{data.product.selling_price}}</span></p>
+              <p>Quantity: {{ data.product_quantity }}</p>
+              <p>Total Amount: <span style="color: green; font-weight: bold;">${{ data.total_amount }}</span></p>
+              <p>Order Date: {{ data.date|date:"F d, Y" }}</p>
+              <p>Delivery Date: {{delivery_date|date:"F d, Y"}}</p>
+              <p>Payment Mode: {{data.payment_type}}</p>
+              <p>Delivery Address: {{data.address}}</p>
+            </div>
+            <div class="column text-center">
+                <img src="{{ data.product.image.url }}" alt="{{ data.product.name }}" class="img-fluid image-shadow">
+                <br>
+                <br>
+                <a href="{% url 'product' data.product.category data.product.name %}" class="ttext">
+                    <button class="animated-button">
+                        <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                          ></path>
+                        </svg>
+                        <span class="text">View Product</span>
+                        <span class="circle"></span>
+                        <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                          ></path>
+                        </svg>
+                      </button>
+                </a>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <style>
+        .ttext{
+            color: black;
+            text-decoration: none;
+        }
+
+      .animated-button {
+        margin-left: 35%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 36px;
+    border: 4px solid;
+    border-color: transparent;
+    font-size: 16px;
+    background-color: inherit;
+    border-radius: 100px;
+    font-weight: 600;
+    color: rgba(17, 17, 17, 0.863);
+    box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.863);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .animated-button svg {
+    position: absolute;
+    width: 24px;
+    fill: rgba(17, 17, 17, 0.863);
+    z-index: 9;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .animated-button .arr-1 {
+    right: 16px;
+  }
+  
+  .animated-button .arr-2 {
+    left: -25%;
+  }
+  
+  .animated-button .circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: rgba(17, 17, 17, 0.863);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+
+  .animated-button .text {
+    position: relative;
+    z-index: 1;
+    transform: translateX(-12px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .animated-button:hover {
+    box-shadow: 0 0 0 12px transparent;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  .animated-button:hover .arr-1 {
+    right: -25%;
+  }
+  
+  .animated-button:hover .arr-2 {
+    left: 16px;
+  }
+  
+  .animated-button:hover .text {
+    transform: translateX(12px);
+  }
+  
+  .animated-button:hover svg {
+    fill: white;
+  }
+  
+  .animated-button:active {
+    scale: 0.95;
+    box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.863);
+  }
+  
+  .animated-button:hover .circle {
+    width: 220px;
+    height: 220px;
+    opacity: 1;
+  }
+  
+    .custom-card {
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.336);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .custom-card-body {
+      padding: 20px;
+    }
+
+    .column {
+      flex: 1;
+      padding: 10px;
+    }
+
+    .column.text-center {
+      text-align: center;
+    }
+
+    .image-shadow {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.384);
+    }
+    p{
+        font-size: 17.5px;
+    }
+  </style>
+{% endblock body %}

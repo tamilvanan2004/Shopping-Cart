@@ -1,0 +1,57 @@
+{% extends "layouts/index.html" %}
+
+{% block body %}
+<div class="body" style="margin-top: 2cm;">
+  {% include "message.html" %}
+  <div class="container">
+    <h3 class="mb-4" >Login Form</h3>
+                      <hr style="color: rgba(0, 0, 0, 0.61);">
+                      <div class="row justify-content-center" style="align-items: center;">
+                        <div class="col-lg-6">
+                            <div class="shadow p-4 rounded">
+                                <h3 class="mb-4" style="text-align: center;">User Login</h3>
+                                <hr style="color: rgba(0, 0, 0, 0.61);">
+                                <form method="post" style="font-size: 20px;">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Password</label>
+                                        <div class="input-group" style="font-size: 20px;">
+                                            <input type="password" class="form-control" id="password" name="password" required style="font-size: 20px;">
+                                            <button class="btn btn-outline-secondary" type="button" id="password-toggle">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+  </div>
+</div>
+<script>
+  // Get the password field and the eye icon button
+  const passwordField = document.getElementById('password');
+  const passwordToggle = document.getElementById('password-toggle');
+
+  // Add click event listener to the eye icon button
+  passwordToggle.addEventListener('click', function() {
+      // Toggle the type attribute of the password field between password and text
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+
+      // Change the eye icon based on the password field's type
+      if (type === 'password') {
+          passwordToggle.innerHTML = '<i class="fas fa-eye"></i>';
+      } else {
+          passwordToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+      }
+  });
+</script>
+
+{% endblock body %}

@@ -1,0 +1,79 @@
+{% extends "layouts/index.html" %}
+
+{% block body %}
+<div class="body" style="margin-top: 3cm;">
+  {% include "message.html" %}
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link atext " href='{% url "orders" %}'><i class="fas fa-shopping-bag"></i> Orders</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link atext " href='{% url "cart" %}'><i class="fas fa-shopping-cart"></i> Cart</a>
+  </li>
+  <li class="nav-item">
+      <a class="nav-link atext active" href='{% url "favorites" %}'><i class="fas fa-heart"></i> Favourite</a>
+  </li>
+ 
+  
+  </ul>
+<br>
+    <h3>User Favorites</h3>
+  <hr style="color: rgba(0, 0, 0, 0.61);">
+  <br>
+
+
+  <table class="table" style="border-collapse: separate; border-spacing: 0 10px;">
+    <tr style=" text-align: center;">
+      <th>Image</th>
+      <th>Name</th>
+      <th>Selling Price</th>
+      <th>Quantity</th>
+      <th>Remove</th>
+    </tr>
+    {% for f in fav %}
+<tr style="text-align: center;" class="item-row">
+  <td><a href="{% url 'product' f.product.category f.product.name %}"><img src="{{f.product.image.url}}" alt="{{f.product.name}}" height="75px"></a></td>
+  <td><a href="{% url 'product' f.product.category f.product.name %}" class="ttext">{{f.product.name}}</a></td>
+  <td><a href="{% url 'product' f.product.category f.product.name %}" class="ttext">$<span class="unit-price">{{f.product.selling_price}}</span></a></td>
+  <td><a href="{% url 'product' f.product.category f.product.name %}" class="ttext qty">{{f.product.quantity}}</a></td>
+  <td><a href="{% url 'remove_fav' f.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to remove')"><i class="fa fa-trash"></i> Remove</a></td>
+</tr>
+{% endfor %}
+
+
+  </table>
+
+  <style>
+    .atext {
+      color: black;
+    }
+    .atext:hover {
+      color: white;
+      background-color: black;
+    }
+     .item-row {
+    height: 2cm;
+    font-size: 20px;
+    background-color: #ffffffc7;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 5px 10px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+ .item-row:hover{
+  height: 2cm;
+    background-color: #ffffffc7;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 10px 15px 20px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+ }
+ .ttext{
+  text-decoration: none;
+  color: black;
+ }
+ img{
+  background-color: #ffffffc7;
+    border-radius: 3px; /* Rounded corners */
+    box-shadow: 0px 5px 10px rgba(14, 14, 14, 0.288); /* Subtle shadow */
+ }
+  </style>
+{% endblock body %}

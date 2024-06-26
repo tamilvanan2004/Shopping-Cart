@@ -1,0 +1,388 @@
+{% extends "layouts/index.html" %}
+
+{% block body %}
+<div class="body" style="margin-top: 2cm;">
+    {% include "message.html" %}
+    <h3>{{product}}</h3>
+    <hr style="color: rgba(0, 0, 0, 0.61);">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'collections' %}">Collection</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'collections' product.category %}">{{product.category}} Products</a></li>
+        </ol>
+    </nav>
+    <br>
+    <div class="main">
+        <div class="containers">
+            <div class="content">
+                <div class="image">
+                    <img src="{{product.image.url}}" alt="" srcset="">
+                </div>
+                <div class="text">
+                    <h4>{{product.name}}</h4>
+                    <p>{{product.description}}</p>
+                    <div class="price">
+                        <h5>Original Price : <strike style="color: rgba(255, 0, 0, 0.911);">${{product.original_price}}</strike></h5><br>
+                        <h5>Selling Price : <span style="color: green;">${{product.selling_price}}</span></h5>
+                    </div><br>
+                    <input type="hidden" id="pid" value="{{product.id}}" name="">
+                    {% csrf_token %}
+                    <div class="qty">
+                        <span class="qty-btn btn" id="qty-minus">
+                            <i class="fa fa-minus"></i>
+                        </span>
+                        <input type="text" class="quandity" name="quantity" id="qty" value="1">
+                        <span class="qty-btn btn" id="qty-plus">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        <button class="btn btn-heart" id="btnFav"><i class="fa fa-heart"></i></button>
+                        <button class="btn btn-cart" id="btnCart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                        <button class="btn btn-order" id="btnOrder"><i class="fa fa-credit-card"></i> Place Order</button>
+                    </div>
+
+                    <div class="overlay" id="orderFormOverlay">
+                      <!-- Container for the order form -->
+                      <div id="orderFormContainer">
+                          <!-- Close button to hide the form -->
+                          <span class="close-btn" onclick="closeOrderForm()">&times;</span>
+                          <br>
+                          
+                          <!-- Form for placing order -->
+                          <form id="orderForm" method="POST">
+                              {% csrf_token %}
+                              <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control text" id="name" placeholder="Enter Your Name">
+                              </div>
+                            
+                              <div class="mb-3">
+                                  <label for="number" class="form-label">Mobile Number</label>
+                                  <input type="tel" class="form-control" id="number" maxlength="10" placeholder="Enter Your Mobile Number">
+                              </div>
+                              <div class="mb-3">
+                                  <label for="alt-number" class="form-label">Alternate Number</label>
+                                  <input type="tel" class="form-control" id="alt-number" maxlength="10" placeholder="Enter Your Alternate Mobile Number">
+                              </div>
+                              <div class="mb-3">
+                                  <label for="address" class="form-label">Address</label>
+                                  <textarea class="form-control" id="address" rows="3" placeholder="Enter Your Address"></textarea>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="payment-type" class="form-label">Payment Type</label>
+                                  <select class="form-select" id="payment-type" aria-label="Payment Type">
+                                      <option value="Cash on Delivery">Cash on Delivery</option>
+                                      <option value="Credit Card">Credit Card</option>
+                                      <option value="Debit Card">Debit Card</option>
+                                      <option value="PayPal">PayPal</option>
+                                      <!-- Add more payment options here if needed -->
+                                  </select>
+                              </div>
+                              <button class="btn btn-success" id="Place-Order">Place Order</button>
+                          </form>
+                      </div>
+                  </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    function showOrderForm() {
+        // Display the overlay and order form
+        document.getElementById("orderFormOverlay").style.display = "flex";
+    }
+
+    function closeOrderForm() {
+        // Hide the overlay and order form
+        document.getElementById("orderFormOverlay").style.display = "none";
+    }
+
+    $(document).ready(function(){
+        var qty = parseInt($('#qty').val()); // Parse the value as an integer
+        $("#qty-plus").click(function(){
+            qty++; // Increment the value
+            $('#qty').val(qty); // Set the new value to the input field
+        });
+        $('#qty-minus').click(function(){
+            qty--;
+            if(qty >= 1) {
+                $('#qty').val(qty);
+            } else {
+                qty = 1;
+                $('#qty').val(qty);
+            }
+        });
+
+        //-----------------------------CART FOR AJAX---------------------------------
+        const btnCart = $('#btnCart');
+const pid = $('#pid');
+const csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+const btnFav = $('#btnFav');
+const btnOrder = $('#btnOrder');
+const Place_Order = $('#Place-Order');
+
+Place_Order.click(function () {
+    const name = $('#name').val();
+    const number = $("#number").val();
+    const alt_number = $("#alt-number").val();
+    const address = $("#address").val();
+    const paymentType = $("#payment-type").val();
+
+    let qty = parseInt($('#qty').val(), 10);
+    qty = isNaN(qty) ? 0 : qty;
+
+    if (qty > 0 && name && number && address && paymentType) { // Check if all required fields are filled
+        let postObj = {
+            product_qty: qty,
+            pid: pid.val(),
+            csrfmiddlewaretoken: csrfToken,
+            name: name,
+            number: number,
+            alt_number: alt_number,
+            address: address,
+            payment_type: paymentType
+        };
+
+        fetch('/placeorder/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(postObj)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            // Handle the response data here
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle any errors here
+        });
+    } else {
+        alert('Please fill in all required fields and enter a valid quantity.');
+    }
+});
+
+
+        btnCart.click(function(){
+            let qty = parseInt($('#qty').val(), 10);
+            qty = isNaN(qty) ? 0 : qty;
+
+            if(qty > 0){
+                let postObj = {
+                    product_qty: qty,
+                    pid: pid.val(),
+                    csrfmiddlewaretoken: csrfToken
+                };
+
+                console.log(postObj);
+
+                fetch('/addtocart/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(postObj)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Handle the response data here
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle any errors here
+                });
+            } else {
+                alert('Please Enter The Quantity');
+            }
+        });
+        //-------------------------------FAV-BUTTON-----------------------------------------
+        btnFav.click(function(){
+            let postObj = {
+                pid: pid.val(),
+                csrfmiddlewaretoken: csrfToken
+            };
+            console.log(postObj)
+            fetch('/addtofav/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(postObj)
+
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Handle the response data here
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle any errors here
+            });
+        });
+
+        //----------------------------------PLACE-ORDER-----------------------------------------
+        btnOrder.click(function(){
+            showOrderForm(); // Show the order form when the button is clicked
+        });
+
+    });
+</script>
+
+<style>
+  a{
+    text-decoration: none;
+  }
+  .main{
+    justify-content: center;
+    align-content: center;
+    display: flex;
+  }
+  .containers{
+   
+    width: 27cm;
+    height: 8cm;
+    padding: 20px;
+  background-color: #ffffffc7;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 10px 15px 20px rgba(112, 109, 109, 0.76); /* Subtle shadow */
+  transition: all 0.2s ease-in-out;
+  }
+  img{
+    justify-content: center;
+    margin-top: 1%;
+    display: flex;
+    position: relative;
+    width: 6cm;
+    height: 6cm;
+   
+    border-radius: 10px;
+    background-color: #ffffffc7;
+    box-shadow: 0px 5px 5px 0px rgba(112, 109, 109, 0.76);
+    
+  }
+.content{
+  
+  display: flex;
+  gap: 4cm;
+}
+.qty {
+    display: flex;
+    align-items: center;
+    gap: 0.5cm;
+}
+
+.qty-btn {
+    background-color: rgb(30, 190, 30);
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.qty-btn i {
+    font-size: 20px;
+}
+
+.quandity {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    border: 2px solid black; /* Remove default input border */
+    margin: 0; /* Remove default input margin */
+    padding: 0; /* Remove default input padding */
+}
+.btn-heart {
+    color: white;
+    background-color: red;
+}
+.btn-heart:hover{
+  color:black;
+ 
+   background-color: #ffffffc7;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.76);
+}
+.qty-btn:hover{
+  color:black;
+ 
+   background-color: #ffffffc7;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.76);
+}
+
+.btn-cart {
+    color: white;
+    background-color: blue;
+    transition: 0.5s;
+}
+.btn-cart:hover{
+  color:black;
+ 
+   background-color: #ffffffc7;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.76);
+}
+.btn-order:hover{
+  color:black;
+ 
+   background-color: #ffffffc7;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.76);
+}
+
+.btn-order {
+    color: white;
+    background-color: green;
+}
+
+.overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Ensure it appears above other elements */
+    }
+
+    /* Style for order form container */
+    #orderFormContainer {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        width: 400px; /* Adjust width as needed */
+    }
+
+    /* Close button style */
+    .close-btn {
+    position: relative;
+   
+    float: right;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: black;
+}
+
+</style>
+{% endblock body %}

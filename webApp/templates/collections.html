@@ -1,0 +1,73 @@
+{% extends "layouts/index.html" %}
+
+{% block body %}
+<div class="body" style="margin-top: 2cm;">
+  <h3>Collections</h3>
+<hr style="color: rgba(0, 0, 0, 0.61);">
+<br>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-3 main">
+   {% for c in category %}
+   <div class="col">
+    <a href="{% url 'collections' c.name %}">
+
+        <div class="card sub-card">
+            <img src="{{c.image.url}}" class="card-img-top" alt="...">
+            <hr style="color: rgba(73, 73, 61, 0.39);">
+            <div class="card-body">
+
+              <h5 class="card-title">{{c.name}}</h5>
+              <p class="card-text">{{c.description}}</p>
+            </div>
+            
+            
+          </div>
+    </a>
+  </div>
+     
+   {% endfor %}
+    
+    
+</div>
+
+</div>
+<style>
+    a{
+        text-decoration: none;
+    }
+    body{
+        background-color:rgba(215, 228, 228, 0.678);
+    }
+    .sub-card {
+  background-color: #ffffffc7;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 10px 15px 20px rgba(0, 0, 0, 0.76); /* Subtle shadow */
+  transition: all 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.sub-card:hover {
+  box-shadow: 20px 25px 30px rgba(0, 0, 0, 0.774); /* Enhanced shadow on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.card-img-top {
+    border-radius: 20px; /* Match card border-radius */
+  height: 200px;
+  padding: 10px; /* Adjust image height as needed */
+}
+
+.card-body {
+  padding: 20px; /* Adjust padding for content */
+}
+
+.card-title {
+  margin-bottom: 10px;
+  font-weight: bold; /* Emphasize title */
+}
+
+
+
+
+
+</style>
+
+{% endblock body %}
